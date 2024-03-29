@@ -1,40 +1,76 @@
-// Navbar
-let menu = document.querySelector('#menu-icon');
-let navbar = document.querySelector('.navbar');
+var time_ele = document.getElementsByClassName("time")[0];
+var start_btn = document.getElementById("start");
+var lap_btn = document.getElementById("lap");
+var stop_btn = document.getElementById("stop");
+var reset_btn = document.getElementById("reset");
+var l1 = document.getElementById("lap1");
+var l2 = document.getElementById("lap2");
+var l3 = document.getElementById("lap3");
+var l4 = document.getElementById("lap4");
+var l5 = document.getElementById("lap5");
 
-menu.onclick = () => {
-    navbar.classList.toggle('active');
+let seconds = 0;
+let interval = null;
+let ctr=0;
+
+start_btn.addEventListener("click", start);
+lap_btn.addEventListener("click", lap);
+stop_btn.addEventListener("click", stop);
+reset_btn.addEventListener("click", reset);
+
+
+function timer() {
+    seconds++;
+
+
+    let hrs = Math.floor(seconds / 3600);
+    let mins = Math.floor((seconds - (hrs * 3600)) / 60);
+    let sec = seconds % 60;
+
+    if(sec < 10)
+        sec = '0' + sec;
+
+    if(mins < 10)
+        mins = '0' + mins;
+
+    if(hrs < 10)
+        hrs = '0' + hrs;
+
+    time_ele.innerHTML = `${hrs}:${mins}:${sec}`;
 }
 
-window.onscroll = () => {
-    navbar.classList.remove('active');
-}
-// Dark Mode
-let darkmode = document.querySelector('#darkmode');
-
-darkmode.onclick = () => {
-    if(darkmode.classList.contains('bx-moon')){
-        darkmode.classList.replace('bx-moon','bx-sun');
-        document.body.classList.add('active');
-    }else{
-        darkmode.classList.replace('bx-sun','bx-moon');
-        document.body.classList.remove('active');
+function start() {
+    if(interval)
+    {
+        return;
     }
+
+    interval = setInterval(timer, 1000);
 }
 
-// Scroll Reveal
-const sr = ScrollReveal ({
-    origin: 'top',
-    distance: '40px',
-    duration: 2000,
-    reset: true
-});
+function lap() {
+    ctr++;
+    if(ctr%5==1)
+        l1.innerHTML="Lap "+ ctr+ ":  " + time_ele.innerHTML;
+    if (ctr%5==2)
+        l2.innerHTML="Lap "+ ctr+ ":  " + time_ele.innerHTML;
+    if (ctr%5==3)
+        l3.innerHTML="Lap "+ ctr+ ":  " + time_ele.innerHTML;
+    if (ctr%5==4)
+        l4.innerHTML="Lap "+ ctr+ ":  " + time_ele.innerHTML;
+    if (ctr%5==0)
+        l5.innerHTML="Lap "+ ctr+ ":  " + time_ele.innerHTML;
 
+}
 
-sr.reveal(`.home-text, .home-img,
-            .about-img, .about-text,
-            .box, .s-box,
-            .btn, .connect-text,
-            .contact-box`, {
-    interval: 200
-})
+function stop() {
+    clearInterval(interval);
+    interval = null;
+}
+
+function reset() {
+    stop();
+    seconds = 0;
+    ctr=0;
+    time_ele.innerHTML = "00:00:00";
+}
